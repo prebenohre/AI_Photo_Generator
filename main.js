@@ -20,13 +20,16 @@ async function handleSubmit(e) {
 	showSpinner();
 	const prompt = textArea.value;
 
-	const response = await fetch("http://localhost:8080/dream", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({ prompt }),
-	});
+	const response = await fetch(
+		"https://ai-photo-generator-216fed49b0c2.herokuapp.com/",
+		{
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ prompt }),
+		}
+	);
 
 	if (response.ok) {
 		const { image } = await response.json();
