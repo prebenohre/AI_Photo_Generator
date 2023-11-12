@@ -1,4 +1,6 @@
 import * as dotenv from "dotenv";
+import path from "path"; // Importer 'path' for å håndtere filstier
+
 if (process.env.NODE_ENV !== "production") {
 	dotenv.config();
 }
@@ -34,6 +36,15 @@ app.post("/", async (req, res) => {
 		res.status(500).send(err.message);
 	}
 });
+
+// Tjener de statiske filene som Vite har bygget i produksjonsmodus
+if (process.env.NODE_ENV === "production") {
+	app.use(express.static("dist"));
+
+	app.get("*", (req, res) => {
+		res.sendFile(path.resolve(__dirname, "dist", "index.html"));
+	});
+}
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Server running on port ${port}`));
