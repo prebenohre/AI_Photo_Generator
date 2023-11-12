@@ -1,18 +1,19 @@
 import * as dotenv from "dotenv";
-dotenv.config();
+if (process.env.NODE_ENV !== "production") {
+	dotenv.config();
+}
 
 import OpenAI from "openai";
-
-const openai = new OpenAI({
-	apiKey: process.env.OPENAI,
-});
-
 import express from "express";
 import cors from "cors";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+const openai = new OpenAI({
+	apiKey: process.env.OPENAI,
+});
 
 app.post("/dream", async (req, res) => {
 	try {
@@ -24,7 +25,7 @@ app.post("/dream", async (req, res) => {
 			size: "1024x1024",
 		});
 
-		console.log(aiResponse); // Fortsett å logge for debugging
+		console.log(aiResponse);
 
 		const image = aiResponse.data[0].url;
 		res.send({ image });
@@ -34,4 +35,5 @@ app.post("/dream", async (req, res) => {
 	}
 });
 
-app.listen(8080, () => console.log("Make art on http://localhost:8080/dream"));
+const port = process.env.PORT || 8080;
+app.listen(port, () => console.log(`Server running on port ${port}`));
