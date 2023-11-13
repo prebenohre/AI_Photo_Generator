@@ -24,6 +24,7 @@ app.post("/", async (req, res) => {
 		const aiResponse = await openai.images.generate({
 			prompt,
 			n: 1,
+			style: vivid,
 			size: "1024x1024",
 		});
 
