@@ -1,15 +1,26 @@
 import * as dotenv from "dotenv";
 import path from "path"; // Importer 'path' for å håndtere filstier
+import OpenAI from "openai";
+import express from "express";
+import cors from "cors";
 
 if (process.env.NODE_ENV !== "production") {
 	dotenv.config();
 }
 
-import OpenAI from "openai";
-import express from "express";
-import cors from "cors";
-
 const app = express();
+
+app.use((req, res, next) => {
+	if (
+		req.header("x-forwarded-proto") !== "https" &&
+		process.env.NODE_ENV === "production"
+	) {
+		res.redirect(`https://${req.header("host")}${req.url}`);
+	} else {
+		next();
+	}
+});
+
 app.use(cors());
 app.use(express.json());
 
