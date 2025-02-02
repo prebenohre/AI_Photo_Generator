@@ -28,7 +28,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI,
 });
 
-app.post("/", async (req, res) => {
+app.post("/dream", async (req, res) => {
   try {
     const prompt = req.body.prompt;
     const aiResponse = await openai.images.generate({

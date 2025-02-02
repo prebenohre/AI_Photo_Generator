@@ -21,7 +21,7 @@ async function handleSubmit(e) {
   const prompt = textArea.value;
 
   const response = await fetch(
-    "https://ai-photo-generator-0108636d5bc8.herokuapp.com",
+    "https://ai-photo-generator-0108636d5bc8.herokuapp.com/dream",
     {
       method: "POST",
       headers: {
