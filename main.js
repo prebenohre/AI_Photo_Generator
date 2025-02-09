@@ -7,7 +7,6 @@ const jsConfetti = new JSConfetti();
 
 form.addEventListener("submit", handleSubmit);
 
-// Håndterer Enter-tasten i textarea
 textArea.addEventListener("keypress", function (event) {
   if (event.key === "Enter") {
     event.preventDefault(); // Forhindrer ny linje i textarea
@@ -32,7 +31,6 @@ async function handleSubmit(e) {
       },
     );
 
-    // Avbryt hvis vi får feilmelding fra serveren
     if (!response.ok) {
       const err = await response.text();
       alert(err);
@@ -41,26 +39,22 @@ async function handleSubmit(e) {
       return;
     }
 
-    // Hent ut image-url fra serveren
     const { image } = await response.json();
     const result = document.querySelector("#result");
 
-    // Tøm #result før vi legger inn et nytt bilde
-    result.innerHTML = "";
+    result.innerHTML = `Loading image... <span class="loading-spinner">⚙️</span>`;
 
-    // Opprett et nytt img-element og sett bredden
     const imgElement = document.createElement("img");
     imgElement.width = 512;
     imgElement.src = image;
 
-    // Vent på at bildet er ferdiglastet i nettleseren
     imgElement.addEventListener("load", () => {
-      // Nå er bildet klart, så vi skyter konfetti
+      result.innerHTML = "";
+
+      result.appendChild(imgElement);
+
       triggerConfetti();
     });
-
-    // Legg bildet inn i #result
-    result.appendChild(imgElement);
   } catch (err) {
     console.error(err);
     alert(err);

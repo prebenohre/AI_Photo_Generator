@@ -1,5 +1,5 @@
 import * as dotenv from "dotenv";
-import path from "path"; // Importer 'path' for å håndtere filstier
+import path from "path";
 import OpenAI from "openai";
 import express from "express";
 import cors from "cors";
@@ -45,7 +45,6 @@ app.post("/dream", async (req, res) => {
   }
 });
 
-// Tjener de statiske filene som Vite har bygget i produksjonsmodus
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("dist"));
 
