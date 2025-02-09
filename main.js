@@ -7,7 +7,7 @@ const jsConfetti = new JSConfetti();
 
 form.addEventListener("submit", handleSubmit);
 
-// Ny kode for å håndtere Enter-tasten
+// Håndterer Enter-tasten i textarea
 textArea.addEventListener("keypress", function (event) {
   if (event.key === "Enter") {
     event.preventDefault(); // Forhindrer ny linje i textarea
@@ -20,29 +20,53 @@ async function handleSubmit(e) {
   showSpinner();
   const prompt = textArea.value;
 
-  const response = await fetch(
-    "https://ai-photo-generator-0108636d5bc8.herokuapp.com/dream",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+  try {
+    const response = await fetch(
+      "https://ai-photo-generator-0108636d5bc8.herokuapp.com/dream",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt }),
       },
-      body: JSON.stringify({ prompt }),
-    },
-  );
+    );
 
-  if (response.ok) {
+    // Avbryt hvis vi får feilmelding fra serveren
+    if (!response.ok) {
+      const err = await response.text();
+      alert(err);
+      console.error(err);
+      hideSpinner();
+      return;
+    }
+
+    // Hent ut image-url fra serveren
     const { image } = await response.json();
     const result = document.querySelector("#result");
-    result.innerHTML = `<img src="${image}" width="512" />`;
-    triggerConfetti(); // Kaller konfetti her
-  } else {
-    const err = await response.text();
-    alert(err);
-    console.error(err);
-  }
 
-  hideSpinner();
+    // Tøm #result før vi legger inn et nytt bilde
+    result.innerHTML = "";
+
+    // Opprett et nytt img-element og sett bredden
+    const imgElement = document.createElement("img");
+    imgElement.width = 512;
+    imgElement.src = image;
+
+    // Vent på at bildet er ferdiglastet i nettleseren
+    imgElement.addEventListener("load", () => {
+      // Nå er bildet klart, så vi skyter konfetti
+      triggerConfetti();
+    });
+
+    // Legg bildet inn i #result
+    result.appendChild(imgElement);
+  } catch (err) {
+    console.error(err);
+    alert(err);
+  } finally {
+    hideSpinner();
+  }
 }
 
 function showSpinner() {
